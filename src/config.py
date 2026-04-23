@@ -6,28 +6,24 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 
-# 현재 파일 위치:
-# Analysis/projects/keyword/src/config.py
 CURRENT_FILE = Path(__file__).resolve()
-
-# 프로젝트 루트:
-# Analysis/projects/keyword
 PROJECT_DIR = CURRENT_FILE.parents[1]
+WORKSPACE_DIR = PROJECT_DIR.parent
+ENV_CANDIDATES = [
+    PROJECT_DIR / ".env",
+    WORKSPACE_DIR / ".env",
+]
 
-# 공용 루트:
-# Analysis
-ROOT_DIR = CURRENT_FILE.parents[3]
+for env_path in ENV_CANDIDATES:
+    if env_path.exists():
+        load_dotenv(env_path, override=False)
 
-# 공용 .env 위치
-ENV_PATH = ROOT_DIR / ".env"
-
-# .env 로드
-load_dotenv(ENV_PATH)
+ENV_PATH = next((path for path in ENV_CANDIDATES if path.exists()), ENV_CANDIDATES[0])
 
 
 class Settings:
     # base paths
-    ROOT_DIR = ROOT_DIR
+    ROOT_DIR = WORKSPACE_DIR
     PROJECT_DIR = PROJECT_DIR
     SRC_DIR = PROJECT_DIR / "src"
 
